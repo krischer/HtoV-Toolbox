@@ -57,10 +57,16 @@ def konno_ohmachi_smoothing_window(frequencies, center_frequency, bandwidth):
     smoothing_window = (np.sin(bandwidth * np.log10(frequencies / \
            center_frequency)) / (bandwidth * np.log10(frequencies / \
            center_frequency))) ** 4
+    # Check if the center frequency is exactly part of the provided
+    # frequencies. This will result in an undefined logarithmic. Therefore set
+    # it to one.
+    center_index = np.where(frequencies == center_frequency)
+    if center_index:
+        smoothing_window[center_index[0]] = 1
     # Remove NaN values.
     smoothing_window[np.isnan(smoothing_window)] = 0
     # Normalize to one.
-    smoothing_window /= smoothing_window.sum()
+    # smoothing_window /= smoothing_window.sum()
     return smoothing_window
 
 
