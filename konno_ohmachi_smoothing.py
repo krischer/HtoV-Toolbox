@@ -66,7 +66,7 @@ def konno_ohmachi_smoothing_window(frequencies, center_frequency, bandwidth):
     # Remove NaN values.
     smoothing_window[np.isnan(smoothing_window)] = 0
     # Normalize to one.
-    # smoothing_window /= smoothing_window.sum()
+    smoothing_window /= smoothing_window.sum()
     return smoothing_window
 
 
