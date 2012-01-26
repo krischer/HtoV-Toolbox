@@ -15,7 +15,7 @@ from mtspec import mtspec, sine_psd
 import numpy as np
 from obspy.core.util import scoreatpercentile as quantile
 from obspy.signal.filter import highpass, lowpass, bandpass
-from obspy.signal.trigger import zdetect
+from obspy.signal.trigger import zDetect as zdetect
 from scipy.signal import resample
 
 from utils import *
