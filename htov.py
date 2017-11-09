@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#-------------------------------------------------------------------
+# ------------------------------------------------------------------
 # Filename: htov.py
 #  Purpose: Routines for calculating HVSR.
 #   Author: Lion Krischer
@@ -7,18 +7,22 @@
 #  License: GPLv2
 #
 # Copyright (C) 2010 Lion Krischer
-#---------------------------------------------------------------------
+# ------------------------------------------------------------------
 
 from copy import deepcopy
 from math import ceil
 from mtspec import mtspec, sine_psd
 import numpy as np
-from obspy.core.util import scoreatpercentile as quantile
-from obspy.signal.filter import highpass, lowpass, bandpass
-from obspy.signal.trigger import zDetect as zdetect
+from scipy.stats import scoreatpercentile as quantile
 from scipy.signal import resample
+from obspy.signal.filter import highpass, lowpass, bandpass
+try:
+    from obspy.signal.trigger import z_detect
+except:
+    from obspy.signal.trigger import zDetect as z_detect  # NOQA
 
-from utils import *
+from utils import (getAreasWithinThreshold, getIntervalsInAreas,
+                   single_taper_spectrum)
 from konno_ohmachi_smoothing import calculate_smoothing_matrix
 
 
@@ -27,7 +31,7 @@ def resampleFilterAndCutTraces(stream, resampling_rate, lowpass_value,
                                endtime, message_function=None):
     """
     Resamples, filters and cuts all Traces in a Stream object.
-    
+
     It will always apply each operation to every trace in the order described
     above.
 
@@ -123,7 +127,7 @@ def calculateCharacteristicNoiseFunction(stream, threshold, window_length,
         message_function('Calculating characteristic noise function...')
     # Get the characteristic function for each Trace.
     for trace in stream:
-        charNoiseFunctions.append(zdetect(trace.data, window_length))
+        charNoiseFunctions.append(z_detect(trace.data, window_length))
     lengths = [len(tr.data) for tr in stream]
     if message_function:
         message_function('Applying threshold...')
